@@ -6,39 +6,36 @@ import TodoList from './TodoList'
 import TodoForm from './TodoForm'
 
 function App() {
-  //const [count, setCount] = useState(0)
-  //const [exampleStateValue, setExampleStateValue] = useState(42)
-  const [newTodo, setNewTodo] = useState('Start using useState hook');
+  //Rename the existing state value, newTodo, to todoList and the update function, setNewTodo, to setTodoList.
+ //Change the useState's initialValue to an empty array.
+  const [todoList, setTodoList] = useState([]);
 
+//  Between the useState and the return statement, create a handler function named addTodo
+// It takes an argument title
+// Create a const newTodo with an object that uses title, and id as keys.
+// Set the id using Date.now().
+// The handler then calls setTodoList passing in an array containing the destructured todoList and newTodo. 
+// It should look like: setTodoList([...todoList, newTodo])
+
+// const handleAddTodo = (title) => {
+//   const newTodo = { id: Date.now(), title };
+//   setTodoList((prevList) => [...prevList, newTodo]);
+// };
+
+
+ const addTodo = (title) => {
+    const newTodo = { title,id: Date.now()
+    };
+    setTodoList([...todoList, newTodo]);
+  };
   return (
     <>
-      {/* <div>
-
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1> */}
       
       <h2>Todo List</h2>
-      <TodoForm /> 
-       <p>{newTodo}</p>
-      <TodoList/> 
-
-      {/* <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p> */}
+      {/* Pass the function to an onAddTodo props on the TodoForm instance. */}
+      <TodoForm onAddTodo={addTodo} />   
+      {/* In App, add the todoList state value to the props of the TodoList component instance. */}
+      <TodoList todoList={todoList}/> 
     </>
   )
 }
