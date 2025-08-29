@@ -27,15 +27,8 @@ function TodoForm({onAddTodo}) {
         elementId ="todoTitle" 
         labelText = "Todo"
       />
-          {/* <label htmlFor="todoTitle">Todo</label>
-          <input 
-              type="title"
-              id="todoTitle" 
-              name="title" 
-              value = {workingTodoTitle}
-              onChange={(event) => setWorkingTodo(event.target.value)}/> */}
-          <button type="submit" disabled={workingTodoTitle === ""}>Add Todo</button>
-        </form>
+      <button type="submit" disabled={workingTodoTitle === ""}>Add Todo</button>
+      </form>
       );
 }
 
