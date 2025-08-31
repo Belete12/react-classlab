@@ -2,13 +2,41 @@ import {useState} from 'react';
 import TextInputWithLabel from "../../shared/TextInputWithLabel";
 
 
-function TodoListItem({ todo, onCompleteTodo }) {
- const [isEditing, setIsEditing] = useState(false);
+function TodoListItem({ todo, onCompleteTodo, onUpdateTodo }) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [workingTitle, setWorkingTitle] = useState(todo.title);
+    
+    const handleCancel = () => {
+        setWorkingTitle(todo.title);
+        setIsEditing(false);
+      };
+
+      // create local state and confrolled form
+    const handleEdit = (event) => {
+      setWorkingTitle(event.target.value);
+      };
+
+    const handleUpdate = (event) => {
+      if (!isEditing) return;
+      event.preventDefault();
+      onUpdateTodo({ ...todo, 
+      title: workingTitle
+    });
+    setIsEditing(false);
+  };
   return (
      <li>
-      <form> 
+      <form onSubmit={handleUpdate}> 
         {isEditing ? (
-            <TextInputWithLabel value ={todo.title}/>
+           <>
+            <TextInputWithLabel 
+            elementId={`todo-${todo.id}`}
+            label="Edit Todo"
+            value ={workingTitle} onChange={handleEdit}/>
+            <button type="button" onClick={handleCancel}> Cancel</button>
+            {/* <button type="submit" onClick={handleUpdate}> Update</button> */}
+            <button type="submit"> Update </button>
+           </>
         ) :
         (
           <>

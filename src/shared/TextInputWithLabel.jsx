@@ -4,12 +4,7 @@
 // Add a default export to the bottom of the file.
 
 
-function TextInputWithLabel({elementId,
-    label,
-    onChange,
-    ref,
-    value,
-}) {
+function TextInputWithLabel({elementId,label,onChange,ref,value}) {
   return (
     <>
       <label htmlFor={elementId}>{label}</label>
@@ -22,7 +17,7 @@ function TextInputWithLabel({elementId,
         />
     </>
   );
-};
+}
 
 export default TextInputWithLabel;
 
