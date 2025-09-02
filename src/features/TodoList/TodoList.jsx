@@ -1,29 +1,31 @@
-import TodoListItem from "./TodoListItem"
+import TodoListItem from "./TodoListItem";
 
+function TodoList({ todoList, onCompleteTodo, onUpdateTodo, isLoading, isSaving }) {
+  if (isLoading || isSaving) {
+    return <p>Todo list loading...</p>;
+  }
 
-function TodoList({todoList,onCompleteTodo, onUpdateTodo}){
+  // Filter out completed todos
+  const filteredTodoList = todoList.filter(todo => !todo.isCompleted);
+// if (!filteredTodoList || filteredTodoList.length === 0)
+  if (!filteredTodoList || filteredTodoList.length === 0) {
+    return <p>Add a todo above to get started</p>;
+  }
 
-//create a constant filteredTodoList that contains the todoList that has been filtered to remove any todo whose .isCompleted property is true
-//replace the todoList references in the JSX with the filteredTodoList
-const filteredTodoList = todoList.filter(todo => !todo.isCompleted);
-
-    if (filteredTodoList.length === 0){
-        return <p>Add todo above to get started</p>;
-    }
-    else {
-    return(
-        <ul>
-            {filteredTodoList.map(todo => (<TodoListItem 
-            key={todo.id} 
-            todo={todo} 
-            onCompleteTodo={onCompleteTodo}
-            onUpdateTodo = {onUpdateTodo}
-            />))}
-        </ul>
-    )
-    }
-
+  return (
+    <ul>
+      {filteredTodoList.map(todo => (
+        <TodoListItem
+          key={todo.id}
+          todo={todo}
+          onCompleteTodo={onCompleteTodo}
+          onUpdateTodo={onUpdateTodo}
+          isLoading={isLoading}
+          isSaving={isSaving}
+        />
+      ))}
+    </ul>
+  );
 }
-export default TodoList
 
-
+export default TodoList;
