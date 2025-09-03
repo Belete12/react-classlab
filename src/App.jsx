@@ -111,11 +111,16 @@ function App() {
     }
   };
 
-  const completeTodos = (id) => {
+  const completeTodos = async(id) => {
+    const originalTodo = todoList.find(todo => todo.id=== id);
+    if(!originalTodo) return;
+
+    const updateTodo = { ...originalTodo, isCompleted:true};
     const updatedTodos = todoList.map(todo =>
       todo.id === id ? { ...todo, isCompleted: true } : todo
     );
     setTodoList(updatedTodos);
+    setErrorMessage("");
   };
 
 
@@ -130,7 +135,8 @@ function App() {
           id: editedTodo.id,
           fields:{
             title: editedTodo.title,
-            isCompleted: editedTodo.isCompleted
+            isCompleted: true,
+            //isCompleted: editedTodo.isCompleted
           },
         },
       ],
@@ -159,9 +165,8 @@ function App() {
       const revertedTodos = todoList.map(todo =>
         todo.id === originalTodo.id ? originalTodo : todo
       );
-      setTodoList([...revertedTodos]);
-    } finally {
-      setIsSaving(false);
+      //setIsSaving(false);
+      setTodoList(revertedTodos);
     }
   }
    // updatetodo async function end
@@ -176,10 +181,10 @@ function App() {
       isLoading={isLoading}
       isSaving={isSaving}
     />
-<hr  />
+{/* <hr  /> */}
     {errorMessage && (
   <div>
-    {/* <hr /> */}
+    <hr /> 
     <p>{errorMessage || "No errors yet."}</p>
   <button onClick={() => setErrorMessage("")}>Dismiss Error Message</button>
 </div>
