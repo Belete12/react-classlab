@@ -5,20 +5,38 @@ import './App.css';
 import TodoList from './features/TodoList/TodoList';
 import TodoForm from './features/TodoForm';
 
+
+ const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
+
+const encodeUrl = ({ sortField, sortDirection }) => {
+  let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+  return encodeURI(`${url}?${sortQuery}`);
+};
+
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+//sortField: initial value of "createdTime"
+//sortDirection: initial value of "desc" as in descending
+
+const [sortField, setSortField] = useState("createdTime");
+const [sortDirection, setSortDirection] = useState("desc");
+
   // Airtable API setup
-  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
+ // const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
 
   useEffect(() => {
   setErrorMessage("NetworkError when attempting to fetch resource.. Reverting todo...");
     const fetchTodos = async () => {
       setIsLoading(true);
+      setErrorMessage("");
+
+       const requestUrl = encodeUrl({ sortField, sortDirection });
+
       const options = {
         method: "GET",
         headers: {
@@ -27,7 +45,7 @@ function App() {
       };
 
       try {
-        const resp = await fetch(url, options);
+        const resp = await fetch(requestUrl, options);
         if (!resp.ok) {
           throw new Error(resp.statusText);
         }
@@ -51,6 +69,7 @@ function App() {
         });
 
         setTodoList(todos);
+
       } catch (error) {
         console.error(error);
         setErrorMessage(error.message);
@@ -59,8 +78,9 @@ function App() {
       }
     };
 
+
     fetchTodos();
-  }, []);
+  }, [sortField, sortDirection]);
 
   const addTodo = async (newTodo) => {
     setIsSaving(true);
@@ -86,7 +106,7 @@ function App() {
     };
 
     try {
-      const resp = await fetch(url, options);
+      const resp = await fetch(encodeUrl({sortField, sortDirection}), options);
       if (!resp.ok) {
         throw new Error(resp.statusText);
       }
@@ -153,7 +173,7 @@ function App() {
     };
 
     try {
-      const resp = await fetch(url, options);
+      const resp = await fetch(encodeUrl({sortField, sortDirection}), options);
       if (!resp.ok) {
         throw new Error(`Failed to update todo (status ${resp.status})`);
         
@@ -173,6 +193,11 @@ function App() {
    return (
   <>
     <h2>Todo List</h2>
+
+
+
+
+
     <TodoForm onAddTodo={addTodo} />
     <TodoList
       todoList={todoList}
