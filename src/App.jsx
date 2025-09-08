@@ -9,17 +9,26 @@ import TodosViewForm from './features/TodosViewForm';
 
  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
-const encodeUrl = ({ sortField, sortDirection }) => {
+const encodeUrl = ({ sortField, sortDirection,queryString }) => {
   
-  let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-  return encodeURI(`${url}?${sortQuery}`);
-};
+    let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+    
+    let searchQuery = "";
+   if (queryString) {
+    searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+   }
+
+
+    return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+
+ };
 
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [queryString, setQueryString] = useState("");
 
 //sortField: initial value of "createdTime"
 //sortDirection: initial value of "desc" as in descending
@@ -37,7 +46,7 @@ const [sortDirection, setSortDirection] = useState("desc");
       setIsLoading(true);
       setErrorMessage("");
 
-       const requestUrl = encodeUrl({ sortField, sortDirection });
+       const requestUrl = encodeUrl({ sortField, sortDirection,queryString });
 
       const options = {
         method: "GET",
@@ -82,7 +91,7 @@ const [sortDirection, setSortDirection] = useState("desc");
 
 
     fetchTodos();
-  }, [sortField, sortDirection]);
+  }, [sortField, sortDirection, queryString]);
 
   const addTodo = async (newTodo) => {
     setIsSaving(true);
@@ -108,7 +117,7 @@ const [sortDirection, setSortDirection] = useState("desc");
     };
 
     try {
-      const resp = await fetch(encodeUrl({sortField, sortDirection}), options);
+      const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
       if (!resp.ok) {
         throw new Error(resp.statusText);
       }
@@ -175,7 +184,7 @@ const [sortDirection, setSortDirection] = useState("desc");
     };
 
     try {
-      const resp = await fetch(encodeUrl({sortField, sortDirection}), options);
+      const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
       if (!resp.ok) {
         throw new Error(`Failed to update todo (status ${resp.status})`);
         
@@ -197,10 +206,6 @@ const [sortDirection, setSortDirection] = useState("desc");
   <>
     <h2>Todo List</h2>
 
-
-
-
-
     <TodoForm onAddTodo={addTodo} />
     <TodoList
       todoList={todoList}
@@ -211,12 +216,14 @@ const [sortDirection, setSortDirection] = useState("desc");
     />
 
  <hr  /> 
- <TodosViewForm
-  sortField={sortField}
-  sortDirection={sortDirection}
-  setSortField={setSortField}
-  setSortDirection={setSortDirection}
-/>
+  <TodosViewForm
+    sortField={sortField}
+    setSortField={setSortField}
+    sortDirection={sortDirection}
+    setSortDirection={setSortDirection}
+    queryString ={queryString}
+    setQueryString={setQueryString}
+  />
 
 
 
