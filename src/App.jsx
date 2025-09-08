@@ -4,11 +4,13 @@ import viteLogo from '/vite.svg';
 import './App.css';
 import TodoList from './features/TodoList/TodoList';
 import TodoForm from './features/TodoForm';
+import TodosViewForm from './features/TodosViewForm';
 
 
  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
 const encodeUrl = ({ sortField, sortDirection }) => {
+  
   let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
   return encodeURI(`${url}?${sortQuery}`);
 };
@@ -181,6 +183,7 @@ const [sortDirection, setSortDirection] = useState("desc");
     } catch (error) {
       console.error('Update error:', error);
       setErrorMessage(`${error.message}. Reverting todo...`);
+      //setTodoList(todoList);
 
       const revertedTodos = todoList.map(todo =>
         todo.id === originalTodo.id ? originalTodo : todo
@@ -206,7 +209,17 @@ const [sortDirection, setSortDirection] = useState("desc");
       isLoading={isLoading}
       isSaving={isSaving}
     />
-{/* <hr  /> */}
+
+ <hr  /> 
+ <TodosViewForm
+  sortField={sortField}
+  sortDirection={sortDirection}
+  setSortField={setSortField}
+  setSortDirection={setSortDirection}
+/>
+
+
+
     {errorMessage && (
   <div>
     <hr /> 
