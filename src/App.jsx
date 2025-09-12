@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
@@ -7,21 +7,22 @@ import TodoForm from './features/TodoForm';
 import TodosViewForm from './features/TodosViewForm';
 
 
- const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
 
-const encodeUrl = ({ sortField, sortDirection,queryString }) => {
+//  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
+
+// const encodeUrl = ({ sortField, sortDirection,queryString }) => {
   
-    let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+//     let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
     
-    let searchQuery = "";
-   if (queryString) {
-    searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
-   }
+//     let searchQuery = "";
+//    if (queryString) {
+//     searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+//    }
 
 
-    return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+//     return encodeURI(`${url}?${sortQuery}${searchQuery}`);
 
- };
+//  };
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -30,15 +31,32 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [queryString, setQueryString] = useState("");
 
-//sortField: initial value of "createdTime"
+  //sortField: initial value of "createdTime"
 //sortDirection: initial value of "desc" as in descending
 
 const [sortField, setSortField] = useState("createdTime");
 const [sortDirection, setSortDirection] = useState("desc");
 
+// Create a variable encodeUrl (same name as helper function created last week) inside the App component and assign it an empty useCallback.
+// Define an empty arrow function that takes no arguments in the useCallback. It should now look like:
+  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
+ const token = `Bearer ${import.meta.env.VITE_PAT}`;
+
+// const encodeUrl = useCallback(() => {}, []);
+
+  const encodeUrl = useCallback(() => {
+      const sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+      const searchQuery = queryString
+        ? `&filterByFormula=SEARCH("${queryString}",+title)`
+        : "";
+      return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+    }, [sortField, sortDirection, queryString, url]);
+
+
+
   // Airtable API setup
  // const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
-  const token = `Bearer ${import.meta.env.VITE_PAT}`;
+ // const token = `Bearer ${import.meta.env.VITE_PAT}`;
 
   useEffect(() => {
   setErrorMessage("NetworkError when attempting to fetch resource.. Reverting todo...");
@@ -46,7 +64,7 @@ const [sortDirection, setSortDirection] = useState("desc");
       setIsLoading(true);
       setErrorMessage("");
 
-       const requestUrl = encodeUrl({ sortField, sortDirection,queryString });
+       const requestUrl = encodeUrl();
 
       const options = {
         method: "GET",
@@ -91,7 +109,7 @@ const [sortDirection, setSortDirection] = useState("desc");
 
 
     fetchTodos();
-  }, [sortField, sortDirection, queryString]);
+  }, [sortField, sortDirection, queryString, encodeUrl]);
 
   const addTodo = async (newTodo) => {
     setIsSaving(true);
@@ -117,7 +135,7 @@ const [sortDirection, setSortDirection] = useState("desc");
     };
 
     try {
-      const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.statusText);
       }
@@ -165,9 +183,7 @@ const [sortDirection, setSortDirection] = useState("desc");
         {
           id: editedTodo.id,
           fields:{
-            title: editedTodo.title,
-            isCompleted: true,
-            //isCompleted: editedTodo.isCompleted
+            title: editedTodo.title
           },
         },
       ],
@@ -184,7 +200,7 @@ const [sortDirection, setSortDirection] = useState("desc");
     };
 
     try {
-      const resp = await fetch(encodeUrl({sortField, sortDirection, queryString}), options);
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(`Failed to update todo (status ${resp.status})`);
         
@@ -192,12 +208,11 @@ const [sortDirection, setSortDirection] = useState("desc");
     } catch (error) {
       console.error('Update error:', error);
       setErrorMessage(`${error.message}. Reverting todo...`);
-      //setTodoList(todoList);
 
       const revertedTodos = todoList.map(todo =>
         todo.id === originalTodo.id ? originalTodo : todo
       );
-      //setIsSaving(false);
+
       setTodoList(revertedTodos);
     }
   }
