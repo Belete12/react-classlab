@@ -7,23 +7,6 @@ import TodoForm from './features/TodoForm';
 import TodosViewForm from './features/TodosViewForm';
 
 
-
-//  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
-
-// const encodeUrl = ({ sortField, sortDirection,queryString }) => {
-  
-//     let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-    
-//     let searchQuery = "";
-//    if (queryString) {
-//     searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
-//    }
-
-
-//     return encodeURI(`${url}?${sortQuery}${searchQuery}`);
-
-//  };
-
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,14 +14,10 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [queryString, setQueryString] = useState("");
 
-  //sortField: initial value of "createdTime"
-//sortDirection: initial value of "desc" as in descending
-
 const [sortField, setSortField] = useState("createdTime");
 const [sortDirection, setSortDirection] = useState("desc");
 
-// Create a variable encodeUrl (same name as helper function created last week) inside the App component and assign it an empty useCallback.
-// Define an empty arrow function that takes no arguments in the useCallback. It should now look like:
+
   const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
  const token = `Bearer ${import.meta.env.VITE_PAT}`;
 
@@ -52,11 +31,6 @@ const [sortDirection, setSortDirection] = useState("desc");
       return encodeURI(`${url}?${sortQuery}${searchQuery}`);
     }, [sortField, sortDirection, queryString, url]);
 
-
-
-  // Airtable API setup
- // const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
- // const token = `Bearer ${import.meta.env.VITE_PAT}`;
 
   useEffect(() => {
   setErrorMessage("NetworkError when attempting to fetch resource.. Reverting todo...");

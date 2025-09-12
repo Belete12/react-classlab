@@ -1,8 +1,24 @@
-function TodosViewForm({ sortField, sortDirection, setSortField, setSortDirection,queryString, setQueryString }) {
-    //To define a function preventRefresh whose only job is to prevent the page from refreshing if a user accidentally hits enter while working with this form.
+import { useState, useEffect } from 'react';
+
+function TodosViewForm({ sortField, setSortField, sortDirection, setSortDirection,queryString, setQueryString }) {
+
     const preventRefresh = (event) => {
         event.preventDefault();
     }
+
+const [localQueryString, setLocalQueryString] = useState(queryString);
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      setQueryString(localQueryString);
+    }, 500);
+
+    return () => {
+      clearTimeout(debounce);
+    };
+  }, [localQueryString, setQueryString]);
+
+
 
   return (
     <form onSubmit={preventRefresh}>
