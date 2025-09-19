@@ -1,11 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
-import TodoList from './features/TodoList/TodoList';
-import TodoForm from './features/TodoForm';
-import TodosViewForm from './features/TodosViewForm';
-
+import { useState, useEffect, useCallback } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import TodoList from "./features/TodoList/TodoList";
+import TodoForm from "./features/TodoForm";
+import TodosViewForm from "./features/TodosViewForm";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -14,37 +13,37 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [queryString, setQueryString] = useState("");
 
-const [sortField, setSortField] = useState("createdTime");
-const [sortDirection, setSortDirection] = useState("desc");
+  const [sortField, setSortField] = useState("createdTime");
+  const [sortDirection, setSortDirection] = useState("desc");
 
-
-  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
- const token = `Bearer ${import.meta.env.VITE_PAT}`;
-
-// const encodeUrl = useCallback(() => {}, []);
+  const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${
+    import.meta.env.VITE_TABLE_NAME
+  }`;
+  const token = `Bearer ${import.meta.env.VITE_PAT}`;
 
   const encodeUrl = useCallback(() => {
-      const sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-      const searchQuery = queryString
-        ? `&filterByFormula=SEARCH("${queryString}",+title)`
-        : "";
-      return encodeURI(`${url}?${sortQuery}${searchQuery}`);
-    }, [sortField, sortDirection, queryString, url]);
-
+    const sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+    const searchQuery = queryString
+      ? `&filterByFormula=SEARCH("${queryString}",+title)`
+      : "";
+    return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+  }, [sortField, sortDirection, queryString, url]);
 
   useEffect(() => {
-  setErrorMessage("NetworkError when attempting to fetch resource.. Reverting todo...");
+    setErrorMessage(
+      "NetworkError when attempting to fetch resource.. Reverting todo..."
+    );
     const fetchTodos = async () => {
       setIsLoading(true);
       setErrorMessage("");
 
-       const requestUrl = encodeUrl();
+      const requestUrl = encodeUrl();
 
       const options = {
         method: "GET",
         headers: {
-          Authorization: token
-        }
+          Authorization: token,
+        },
       };
 
       try {
@@ -54,10 +53,10 @@ const [sortDirection, setSortDirection] = useState("desc");
         }
 
         const data = await resp.json();
-        const todos = data.records.map(record => {
+        const todos = data.records.map((record) => {
           const todo = {
             id: record.id,
-            ...record.fields
+            ...record.fields,
           };
 
           if (!todo.title) {
@@ -72,7 +71,6 @@ const [sortDirection, setSortDirection] = useState("desc");
         });
 
         setTodoList(todos);
-
       } catch (error) {
         console.error(error);
         setErrorMessage(error.message);
@@ -80,7 +78,6 @@ const [sortDirection, setSortDirection] = useState("desc");
         setIsLoading(false);
       }
     };
-
 
     fetchTodos();
   }, [sortField, sortDirection, queryString, encodeUrl]);
@@ -100,10 +97,10 @@ const [sortDirection, setSortDirection] = useState("desc");
     };
 
     const options = {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: token,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     };
@@ -134,40 +131,38 @@ const [sortDirection, setSortDirection] = useState("desc");
     }
   };
 
-  const completeTodos = async(id) => {
-    const originalTodo = todoList.find(todo => todo.id=== id);
-    if(!originalTodo) return;
+  const completeTodos = async (id) => {
+    const originalTodo = todoList.find((todo) => todo.id === id);
+    if (!originalTodo) return;
 
-    const updateTodo = { ...originalTodo, isCompleted:true};
-    const updatedTodos = todoList.map(todo =>
+    const updateTodo = { ...originalTodo, isCompleted: true };
+    const updatedTodos = todoList.map((todo) =>
       todo.id === id ? { ...todo, isCompleted: true } : todo
     );
     setTodoList(updatedTodos);
     setErrorMessage("");
   };
 
-
-  async function updateTodo (editedTodo){
+  async function updateTodo(editedTodo) {
     setIsSaving(true);
-    const originalTodo = todoList.find(todo => todo.id === editedTodo.id);
-    if(!originalTodo)return;
+    const originalTodo = todoList.find((todo) => todo.id === editedTodo.id);
+    if (!originalTodo) return;
 
-    const payload={
+    const payload = {
       records: [
         {
           id: editedTodo.id,
-          fields:{
-            title: editedTodo.title
+          fields: {
+            title: editedTodo.title,
           },
         },
       ],
-
     }; // payload end
 
-  const options = {
-      method: 'PATCH',
+    const options = {
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: token,
       },
       body: JSON.stringify(payload),
@@ -177,57 +172,52 @@ const [sortDirection, setSortDirection] = useState("desc");
       const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(`Failed to update todo (status ${resp.status})`);
-        
       }
     } catch (error) {
-      console.error('Update error:', error);
+      console.error("Update error:", error);
       setErrorMessage(`${error.message}. Reverting todo...`);
 
-      const revertedTodos = todoList.map(todo =>
+      const revertedTodos = todoList.map((todo) =>
         todo.id === originalTodo.id ? originalTodo : todo
       );
 
       setTodoList(revertedTodos);
     }
   }
-   // updatetodo async function end
-   return (
-  <>
-    <h2>Todo List</h2>
+  // updatetodo async function end
+  return (
+    <>
+      <h2>Todo List</h2>
 
-    <TodoForm onAddTodo={addTodo} />
-    <TodoList
-      todoList={todoList}
-      onCompleteTodo={completeTodos}
-      onUpdateTodo={updateTodo}
-      isLoading={isLoading}
-      isSaving={isSaving}
-    />
+      <TodoForm onAddTodo={addTodo} />
+      <TodoList
+        todoList={todoList}
+        onCompleteTodo={completeTodos}
+        onUpdateTodo={updateTodo}
+        isLoading={isLoading}
+        isSaving={isSaving}
+      />
 
- <hr  /> 
-  <TodosViewForm
-    sortField={sortField}
-    setSortField={setSortField}
-    sortDirection={sortDirection}
-    setSortDirection={setSortDirection}
-    queryString ={queryString}
-    setQueryString={setQueryString}
-  />
+      <hr />
+      <TodosViewForm
+        sortField={sortField}
+        setSortField={setSortField}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
+        setQueryString={setQueryString}
+      />
 
-
-
-    {errorMessage && (
-  <div>
-    <hr /> 
-    <p>{errorMessage || "No errors yet."}</p>
-  <button onClick={() => setErrorMessage("")}>Dismiss Error Message</button>
-</div>
-
-    )}
-  </>
-);
-
+      {errorMessage && (
+        <div>
+          <hr />
+          <p>{errorMessage || "No errors yet."}</p>
+          <button onClick={() => setErrorMessage("")}>
+            Dismiss Error Message
+          </button>
+        </div>
+      )}
+    </>
+  );
 }
 
 export default App;
-

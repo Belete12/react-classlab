@@ -1,41 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-function TodosViewForm({ sortField, setSortField, sortDirection, setSortDirection,queryString, setQueryString }) {
-
-    const preventRefresh = (event) => {
-        event.preventDefault();
-    }
-
-const [localQueryString, setLocalQueryString] = useState(queryString);
+function TodosViewForm({
+  sortField,
+  sortDirection,
+  setSortField,
+  setSortDirection,
+  setQueryString,
+}) {
+  const [localQueryString, setLocalQueryString] = useState("");
 
   useEffect(() => {
     const debounce = setTimeout(() => {
       setQueryString(localQueryString);
     }, 500);
 
-    return () => {
-      clearTimeout(debounce);
-    };
+    return () => clearTimeout(debounce);
   }, [localQueryString, setQueryString]);
 
-
+  const preventRefresh = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <form onSubmit={preventRefresh}>
       <div>
-            <label htmlFor="searchTodos"> Search todos </label>
-            <input id="searchTodos"
-            type ="text"
-            value={queryString}
-            onChange={(event) => setQueryString(event.target.value)} />
-            <button type ="button" onClick={()=> setQueryString("")}> Clear </button>
-         </div>
+        <label htmlFor="searchTodos">Search todos</label>
+        <input
+          id="searchTodos"
+          type="text"
+          value={localQueryString}
+          onChange={(event) => setLocalQueryString(event.target.value)}
+        />
+        <button type="button" onClick={() => setLocalQueryString("")}>
+          Clear
+        </button>
+      </div>
+
       <div>
         <label htmlFor="sortBy">Sort by</label>
-        <select id="sortBy" 
-            value={sortField}
-            onChange={(event) => setSortField(event.target.value)}
-          >
+        <select
+          id="sortBy"
+          value={sortField}
+          onChange={(event) => setSortField(event.target.value)}
+        >
           <option value="title">Title</option>
           <option value="createdTime">Time added</option>
         </select>
@@ -49,8 +56,6 @@ const [localQueryString, setLocalQueryString] = useState(queryString);
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </select>
-
-
       </div>
     </form>
   );

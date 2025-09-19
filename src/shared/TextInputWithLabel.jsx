@@ -3,8 +3,7 @@
 // Add a label and an input that are wrapped in a React fragment to the return statement. Their props don't matter for now.
 // Add a default export to the bottom of the file.
 
-
-function TextInputWithLabel({elementId,label,onChange,ref,value}) {
+function TextInputWithLabel({ elementId, label, onChange, ref, value }) {
   return (
     <>
       <label htmlFor={elementId}>{label}</label>
@@ -14,10 +13,9 @@ function TextInputWithLabel({elementId,label,onChange,ref,value}) {
         ref={ref}
         value={value}
         onChange={onChange}
-        />
+      />
     </>
   );
 }
 
 export default TextInputWithLabel;
-
