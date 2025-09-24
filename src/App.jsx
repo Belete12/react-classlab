@@ -1,20 +1,22 @@
-import { useState, useEffect, useCallback } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import TodoList from "./features/TodoList/TodoList";
-import TodoForm from "./features/TodoForm";
-import TodosViewForm from "./features/TodosViewForm";
+import { useState, useEffect, useCallback } from 'react';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './App.css';
+import TodoList from './features/TodoList/TodoList';
+import TodoForm from './features/TodoForm';
+import TodosViewForm from './features/TodosViewForm';
+
+import styles from './App.module.css';
 
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [queryString, setQueryString] = useState("");
+  const [queryString, setQueryString] = useState('');
 
-  const [sortField, setSortField] = useState("createdTime");
-  const [sortDirection, setSortDirection] = useState("desc");
+  const [sortField, setSortField] = useState('createdTime');
+  const [sortDirection, setSortDirection] = useState('desc');
 
   const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${
     import.meta.env.VITE_TABLE_NAME
@@ -25,22 +27,22 @@ function App() {
     const sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
     const searchQuery = queryString
       ? `&filterByFormula=SEARCH("${queryString}",+title)`
-      : "";
+      : '';
     return encodeURI(`${url}?${sortQuery}${searchQuery}`);
   }, [sortField, sortDirection, queryString, url]);
 
   useEffect(() => {
     setErrorMessage(
-      "NetworkError when attempting to fetch resource.. Reverting todo..."
+      'NetworkError when attempting to fetch resource.. Reverting todo...'
     );
     const fetchTodos = async () => {
       setIsLoading(true);
-      setErrorMessage("");
+      setErrorMessage('');
 
       const requestUrl = encodeUrl();
 
       const options = {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: token,
         },
@@ -60,7 +62,7 @@ function App() {
           };
 
           if (!todo.title) {
-            todo.title = "";
+            todo.title = '';
           }
 
           if (!todo.isCompleted) {
@@ -97,10 +99,10 @@ function App() {
     };
 
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
         Authorization: token,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
     };
@@ -124,7 +126,7 @@ function App() {
 
       setTodoList([...todoList, savedTodo]);
     } catch (error) {
-      console.error("error ", error);
+      console.error('error ', error);
       setErrorMessage(error.message);
     } finally {
       setIsSaving(false);
@@ -140,7 +142,7 @@ function App() {
       todo.id === id ? { ...todo, isCompleted: true } : todo
     );
     setTodoList(updatedTodos);
-    setErrorMessage("");
+    setErrorMessage('');
   };
 
   async function updateTodo(editedTodo) {
@@ -160,9 +162,9 @@ function App() {
     }; // payload end
 
     const options = {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: token,
       },
       body: JSON.stringify(payload),
@@ -174,7 +176,7 @@ function App() {
         throw new Error(`Failed to update todo (status ${resp.status})`);
       }
     } catch (error) {
-      console.error("Update error:", error);
+      console.error('Update error:', error);
       setErrorMessage(`${error.message}. Reverting todo...`);
 
       const revertedTodos = todoList.map((todo) =>
@@ -186,7 +188,7 @@ function App() {
   }
   // updatetodo async function end
   return (
-    <>
+    <div className={styles.appContainer}>
       <h2>Todo List</h2>
 
       <TodoForm onAddTodo={addTodo} />
@@ -210,13 +212,13 @@ function App() {
       {errorMessage && (
         <div>
           <hr />
-          <p>{errorMessage || "No errors yet."}</p>
-          <button onClick={() => setErrorMessage("")}>
+          <p>{errorMessage || 'No errors yet.'}</p>
+          <button onClick={() => setErrorMessage('')}>
             Dismiss Error Message
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

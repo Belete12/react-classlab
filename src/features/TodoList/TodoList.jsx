@@ -1,4 +1,5 @@
-import TodoListItem from "./TodoListItem";
+import TodoListItem from './TodoListItem';
+import styles from './TodoList.module.css';
 
 function TodoList({
   todoList,
@@ -18,7 +19,7 @@ function TodoList({
   }
 
   return (
-    <ul>
+    <ul className={styles.todoList}>
       {filteredTodoList.map((todo) => (
         <TodoListItem
           key={todo.id}
