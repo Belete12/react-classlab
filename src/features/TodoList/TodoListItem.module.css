@@ -1,3 +1,4 @@
+/* Add small padding to bottom of each item */
 .todoItem {
-  padding-bottom: 0.5em;
+  padding-bottom: 0.5rem;
 }

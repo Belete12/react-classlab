@@ -1,19 +1,33 @@
+/* Center the app in the body */
 .appContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  /* background-color: #888; */
+  background-color: #f5faff;
+  background-image: url('/images/react2025.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.errorMessage {
-  border: 1px solid red;
-  padding: 1em;
-  background-color: #ffe6e6;
-  color: red;
-  width: 100%;
-  max-width: 600px;
+/* Border around error message container */
+.errorMessageContainer {
+  border: 1px solid #d9534f;
+  padding: 1rem;
   margin-top: 1rem;
+  background-color: #fff0f0;
+  color: #a94442;
+}
+
+.errorMessageContainer::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url('/icons/error.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
 }

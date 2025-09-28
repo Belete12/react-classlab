@@ -210,7 +210,7 @@ function App() {
       />
 
       {errorMessage && (
-        <div>
+        <div className={styles.errorMessageContainer}>
           <hr />
           <p>{errorMessage || 'No errors yet.'}</p>
           <button onClick={() => setErrorMessage('')}>

@@ -1,13 +1,20 @@
-// Inside of src/shared create a new file, TextInputWithLabel.jsx
-// Create a component TextInputWithLabel
-// Add a label and an input that are wrapped in a React fragment to the return statement. Their props don't matter for now.
-// Add a default export to the bottom of the file.
+import styled from 'styled-components';
+
+const StyledLabel = styled.label`
+  display: block;
+  margin-bottom: 4px;
+`;
+
+const StyledInput = styled.input`
+  padding: 6px;
+  margin-bottom: 8px;
+`;
 
 function TextInputWithLabel({ elementId, label, onChange, ref, value }) {
   return (
     <>
-      <label htmlFor={elementId}>{label}</label>
-      <input
+      <StyledLabel htmlFor={elementId}>{label}</StyledLabel>
+      <StyledInput
         type="text"
         id={elementId}
         ref={ref}
