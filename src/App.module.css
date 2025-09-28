@@ -1,0 +1,33 @@
+/* Center the app in the body */
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f5faff;
+  background-image: url('/images/react2025.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Border around error message container */
+.errorMessageContainer {
+  border: 1px solid #d9534f;
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: #fff0f0;
+  color: #a94442;
+}
+
+.errorMessageContainer::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url('/icons/error.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
