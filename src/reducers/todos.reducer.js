@@ -51,21 +51,63 @@ function reducer(state = initialState, action) {
         errorMessage: action.error.message,
         isLoading: false,
       };
-
     case actions.startRequest:
-      return { ...state };
-    case actions.addTodo:
-      return { ...state };
+      return {
+        ...state,
+        isSaving: true,
+      };
+    case actions.addTodo: {
+      const savedTodo = {
+        id: action.record.id,
+        text: action.record.text,
+        completed: action.record.completed ?? false, // fallback if Airtable omits it
+      };
+      return {
+        ...state,
+        todoList: [...state.todoList, savedTodo],
+        isSaving: false,
+      };
+    }
     case actions.endRequest:
-      return { ...state };
-    case actions.updateTodo:
-      return { ...state };
-    case actions.completeTodo:
-      return { ...state };
+      return {
+        ...state,
+        isLoading: false,
+        isSaving: false,
+      };
+
     case actions.revertTodo:
-      return { ...state };
+    case actions.updateTodo: {
+      const updatedTodos = state.todoList.map((todo) =>
+        todo.id === action.editedTodo.id ? action.editedTodo : todo
+      );
+      const updatedState = {
+        ...state,
+        todoList: updatedTodos,
+      };
+
+      if (action.error) {
+        updatedState.errorMessage = action.error.message;
+      }
+
+      return updatedState;
+    }
+
+    case actions.completeTodo: {
+      const updatedTodos = state.todoList.map((todo) =>
+        todo.id === action.id ? { ...todo, completed: true } : todo
+      );
+
+      return {
+        ...state,
+        todoList: updatedTodos,
+      };
+    }
+
     case actions.clearError:
-      return { ...state };
+      return {
+        ...stat,
+        errorMessage: '',
+      };
     default:
       return state;
   }
