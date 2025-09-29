@@ -39,8 +39,8 @@ function reducer(state = initialState, action) {
         ...state,
         todoList: action.records.map((record) => ({
           id: record.id,
-          text: record.text,
-          completed: record.completed,
+          title: record.fields.title || '',
+          isCompleted: record.fields.isCompleted || false,
         })),
         isLoading: false,
       };
@@ -59,8 +59,8 @@ function reducer(state = initialState, action) {
     case actions.addTodo: {
       const savedTodo = {
         id: action.record.id,
-        text: action.record.text,
-        completed: action.record.completed ?? false, // fallback if Airtable omits it
+        title: action.record.fields.title || '',
+        completed: action.record.fields.completed ?? true, // fallback if Airtable omits it
       };
       return {
         ...state,
@@ -105,7 +105,7 @@ function reducer(state = initialState, action) {
 
     case actions.clearError:
       return {
-        ...stat,
+        ...state,
         errorMessage: '',
       };
     default:
