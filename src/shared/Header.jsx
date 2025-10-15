@@ -4,9 +4,11 @@ import styles from './Header.module.css';
 
 const Header = ({ title }) => {
   return (
-    <header>
-      <h1>{title}</h1>
-      <nav>
+    // <header>
+    //   <h1>{title}</h1>
+    <header className={styles.header}>
+      <nav className={styles.nav}>
+        {/* <nav> */}
         <NavLink
           to="/todos"
           className={({ isActive }) =>
@@ -25,6 +27,7 @@ const Header = ({ title }) => {
           About
         </NavLink>
       </nav>
+      {/* <h1 className={styles.title}>{title}</h1> */}
     </header>
   );
 };
