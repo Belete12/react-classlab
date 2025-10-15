@@ -1,0 +1,28 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100vw;
+  min-height: 100vh;
+  padding: 1rem 2rem 2rem 2rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  /* background-image: url('/images/react2025.png');*/
+}
+
+.errorMessageContainer {
+  border: 1px solid #d9534f;
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: #fff0f0;
+  color: #a94442;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding-left: 2rem;
+}
