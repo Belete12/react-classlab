@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../shared/Header';
-import styles from '../App.module.css'; // adjust path if needed
+import styles from '../App.module.css';
 
 import { Link } from 'react-router-dom';
 const NotFound = () => {
